@@ -113,7 +113,7 @@ If you need to run SQL manually:
 
 1. Connect to Neon PostgreSQL using the connection string:
    ```
-   postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+   postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require
    ```
 
 2. Use a PostgreSQL client (pgAdmin, DBeaver, or Neon SQL Editor)

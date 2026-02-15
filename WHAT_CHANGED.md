@@ -53,9 +53,9 @@ axios.get(API_ENDPOINTS.STUDENTS)
 
 Added Neon PostgreSQL configuration:
 ```properties
-spring.datasource.url=jdbc:postgresql://ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
-spring.datasource.username=neondb_owner
-spring.datasource.password=npg_RuAqosp25ZJz
+spring.datasource.url=${DATABASE_URL:jdbc:postgresql://localhost:5432/hostel_db}
+spring.datasource.username=${PGUSER:postgres}
+spring.datasource.password=${PGPASSWORD:postgres}
 ```
 
 ### 4. Environment Variable Templates

@@ -17,12 +17,12 @@ Password: npg_RuAqosp25ZJz
 
 **Pooled (Recommended for most uses):**
 ```
-postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require
 ```
 
 **Direct (For migrations):**
 ```
-postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST.neon.tech/neondb?sslmode=require
 ```
 
 ---
@@ -57,9 +57,9 @@ Click "Variables" and add these:
 SPRING_PROFILES_ACTIVE=vercel
 
 # Database Configuration (Neon PostgreSQL)
-DATABASE_URL=postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require
 
-PGHOST=ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech
+PGHOST=YOUR_HOST-pooler.neon.tech
 PGUSER=neondb_owner
 PGDATABASE=neondb
 PGPASSWORD=npg_RuAqosp25ZJz
@@ -156,7 +156,7 @@ You can connect to your Neon database using:
 
 **Using psql:**
 ```bash
-psql "postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require"
+psql "postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require"
 ```
 
 **Using Neon Console:**
@@ -209,9 +209,9 @@ curl -X POST https://your-backend.railway.app/api/auth/login \
 | Variable | Value |
 |----------|-------|
 | SPRING_PROFILES_ACTIVE | vercel |
-| DATABASE_URL | postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require |
-| PGHOST | ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech |
-| PGUSER | neondb_owner |
+| DATABASE_URL | postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require |
+| PGHOST | YOUR_HOST-pooler.neon.tech |
+| PGUSER | YOUR_USERNAME |
 | PGDATABASE | neondb |
 | PGPASSWORD | npg_RuAqosp25ZJz |
 | JWT_SECRET | your-super-secret-jwt-key-change-this |

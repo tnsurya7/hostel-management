@@ -8,9 +8,9 @@ Copy and paste these into Railway → Variables:
 
 ```bash
 SPRING_PROFILES_ACTIVE=vercel
-DATABASE_URL=postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
-PGHOST=ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech
-PGUSER=neondb_owner
+DATABASE_URL=postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require
+PGHOST=YOUR_HOST-pooler.neon.tech
+PGUSER=YOUR_USERNAME
 PGDATABASE=neondb
 PGPASSWORD=npg_RuAqosp25ZJz
 JWT_SECRET=change-this-to-a-super-strong-random-string-min-256-bits
@@ -40,12 +40,12 @@ NEXT_PUBLIC_API_URL=https://your-backend.railway.app
 
 ### For Spring Boot (Use in Railway)
 ```
-DATABASE_URL=postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5-pooler.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+DATABASE_URL=postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST-pooler.neon.tech/neondb?sslmode=require
 ```
 
 ### For Direct Connection (psql, pgAdmin)
 ```
-postgresql://neondb_owner:npg_RuAqosp25ZJz@ep-blue-queen-aifzk6u5.c-4.us-east-1.aws.neon.tech/neondb?sslmode=require
+postgresql://YOUR_USERNAME:YOUR_PASSWORD@YOUR_HOST.neon.tech/neondb?sslmode=require
 ```
 
 ### Individual Parameters
