@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_ENDPOINTS } from '@/lib/api';
 
 export default function AdminDashboard() {
   const router = useRouter();
@@ -57,11 +58,11 @@ export default function AdminDashboard() {
   const fetchDashboardData = async () => {
     try {
       const [studentsRes, roomsRes, feesRes, complaintsRes, leavesRes] = await Promise.all([
-        axios.get('http://localhost:8080/api/students'),
-        axios.get('http://localhost:8080/api/rooms'),
-        axios.get('http://localhost:8080/api/fees/payments'),
-        axios.get('http://localhost:8080/api/complaints'),
-        axios.get('http://localhost:8080/api/leave-requests'),
+        axios.get(API_ENDPOINTS.STUDENTS),
+        axios.get(API_ENDPOINTS.ROOMS),
+        axios.get(API_ENDPOINTS.FEES.PAYMENTS),
+        axios.get(API_ENDPOINTS.COMPLAINTS),
+        axios.get(API_ENDPOINTS.LEAVE_REQUESTS),
       ]);
 
       setStudents(studentsRes.data);
@@ -137,9 +138,9 @@ export default function AdminDashboard() {
     e.preventDefault();
     try {
       if (modalMode === 'add') {
-        await axios.post('http://localhost:8080/api/students', formData);
+        await axios.post(API_ENDPOINTS.STUDENTS, formData);
       } else {
-        await axios.put(`http://localhost:8080/api/students/${selectedStudent.id}`, formData);
+        await axios.put(API_ENDPOINTS.STUDENT_BY_ID(selectedStudent.id), formData);
       }
       setShowModal(false);
       fetchDashboardData(); // Refresh data
@@ -153,7 +154,7 @@ export default function AdminDashboard() {
     if (!confirm('Are you sure you want to delete this student?')) return;
     
     try {
-      await axios.delete(`http://localhost:8080/api/students/${studentId}`);
+      await axios.delete(API_ENDPOINTS.STUDENT_BY_ID(studentId));
       fetchDashboardData(); // Refresh data
     } catch (error) {
       console.error('Error deleting student:', error);
@@ -658,6 +659,33 @@ export default function AdminDashboard() {
           </div>
         )}
 
+        {/* Quick Actions */}
+        <div className="mt-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <button
+            onClick={() => router.push('/admin/leave-requests')}
+            className="p-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+          >
+            Manage Leave Requests
+          </button>
+          <button
+            onClick={() => router.push('/admin/gate-passes')}
+            className="p-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
+          >
+            Manage Gate Passes
+          </button>
+          <button
+            onClick={() => router.push('/admin/complaints')}
+            className="p-4 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors"
+          >
+            Manage Complaints
+          </button>
+          <button
+            onClick={() => router.push('/admin/fees')}
+            className="p-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors"
+          >
+            View Fee Payments
+          </button>
+        </div>
       </main>
     </div>
   );

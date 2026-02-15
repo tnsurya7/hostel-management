@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_ENDPOINTS } from '@/lib/api';
 
 export default function ParentDashboard() {
   const router = useRouter();
@@ -10,6 +11,8 @@ export default function ParentDashboard() {
   const [childData, setChildData] = useState<any>(null);
   const [leaveRequests, setLeaveRequests] = useState([]);
   const [feePayments, setFeePayments] = useState([]);
+  const [complaints, setComplaints] = useState([]);
+  const [gatePasses, setGatePasses] = useState([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -30,7 +33,7 @@ export default function ParentDashboard() {
 
   const fetchParentData = async () => {
     try {
-      const studentsRes = await axios.get('http://localhost:8080/api/students');
+      const studentsRes = await axios.get(API_ENDPOINTS.STUDENTS);
       
       // In real app, would link parent to specific child via parent email or ID
       // For demo, find student whose parent email matches logged-in user's email
@@ -45,14 +48,21 @@ export default function ParentDashboard() {
       setChildData(child);
 
       if (child) {
-        const [leavesRes, feesRes] = await Promise.all([
-          axios.get('http://localhost:8080/api/leave-requests'),
-          axios.get(`http://localhost:8080/api/fees/payments/student/${child.id}`).catch(() => ({ data: [] })),
+        const [leavesRes, feesRes, complaintsRes, gatePassesRes] = await Promise.all([
+          axios.get(API_ENDPOINTS.LEAVE_REQUESTS),
+          axios.get(API_ENDPOINTS.FEES.PAYMENTS_BY_STUDENT(child.id)).catch(() => ({ data: [] })),
+          axios.get(API_ENDPOINTS.COMPLAINTS),
+          axios.get(API_ENDPOINTS.GATE_PASSES),
         ]);
 
         const childLeaves = leavesRes.data.filter((l: any) => l.studentId === child.id);
+        const childComplaints = complaintsRes.data.filter((c: any) => c.studentId === child.id);
+        const childGatePasses = gatePassesRes.data.filter((g: any) => g.studentId === child.id);
+        
         setLeaveRequests(childLeaves);
         setFeePayments(feesRes.data);
+        setComplaints(childComplaints);
+        setGatePasses(childGatePasses);
       }
     } catch (error) {
       console.error('Error fetching parent data:', error);
@@ -77,6 +87,8 @@ export default function ParentDashboard() {
 
   const pendingFees = feePayments.filter((f: any) => f.status === 'PENDING');
   const pendingLeaves = leaveRequests.filter((l: any) => l.status === 'PENDING');
+  const openComplaints = complaints.filter((c: any) => c.status === 'OPEN');
+  const pendingGatePasses = gatePasses.filter((g: any) => g.status === 'PENDING');
 
   return (
     <div className="min-h-screen bg-gray-50">
@@ -132,7 +144,7 @@ export default function ParentDashboard() {
         </div>
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
               <div className="p-3 bg-yellow-100 rounded-full">
@@ -163,14 +175,28 @@ export default function ParentDashboard() {
 
           <div className="bg-white rounded-lg shadow p-6">
             <div className="flex items-center">
-              <div className="p-3 bg-green-100 rounded-full">
-                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
+              <div className="p-3 bg-red-100 rounded-full">
+                <svg className="w-8 h-8 text-red-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z" />
                 </svg>
               </div>
               <div className="ml-4">
-                <p className="text-sm text-gray-600">Total Leaves</p>
-                <p className="text-2xl font-bold text-gray-900">{leaveRequests.length}</p>
+                <p className="text-sm text-gray-600">Open Complaints</p>
+                <p className="text-2xl font-bold text-gray-900">{openComplaints.length}</p>
+              </div>
+            </div>
+          </div>
+
+          <div className="bg-white rounded-lg shadow p-6">
+            <div className="flex items-center">
+              <div className="p-3 bg-green-100 rounded-full">
+                <svg className="w-8 h-8 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 7a2 2 0 012 2m4 0a6 6 0 01-7.743 5.743L11 17H9v2H7v2H4a1 1 0 01-1-1v-2.586a1 1 0 01.293-.707l5.964-5.964A6 6 0 1121 9z" />
+                </svg>
+              </div>
+              <div className="ml-4">
+                <p className="text-sm text-gray-600">Gate Passes</p>
+                <p className="text-2xl font-bold text-gray-900">{gatePasses.length}</p>
               </div>
             </div>
           </div>
@@ -247,6 +273,82 @@ export default function ParentDashboard() {
                   ))}
                 </tbody>
               </table>
+            )}
+          </div>
+        </div>
+
+        {/* Complaints Section */}
+        <div className="mt-8 bg-white rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Child's Complaints</h2>
+          </div>
+          <div className="p-6">
+            {complaints.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No complaints filed.</p>
+            ) : (
+              <div className="space-y-4">
+                {complaints.map((complaint: any) => (
+                  <div key={complaint.id} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900">{complaint.title}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{complaint.description}</p>
+                        <div className="flex gap-4 mt-2">
+                          <span className="text-xs text-gray-500">Category: {complaint.category}</span>
+                          <span className="text-xs text-gray-500">Priority: {complaint.priority}</span>
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                        complaint.status === 'RESOLVED' ? 'bg-green-100 text-green-800' :
+                        complaint.status === 'IN_PROGRESS' ? 'bg-blue-100 text-blue-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {complaint.status.replace('_', ' ')}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        </div>
+
+        {/* Gate Passes Section */}
+        <div className="mt-8 bg-white rounded-lg shadow">
+          <div className="px-6 py-4 border-b border-gray-200">
+            <h2 className="text-lg font-semibold text-gray-900">Gate Passes</h2>
+          </div>
+          <div className="p-6">
+            {gatePasses.length === 0 ? (
+              <p className="text-gray-500 text-center py-4">No gate passes requested.</p>
+            ) : (
+              <div className="space-y-4">
+                {gatePasses.map((pass: any) => (
+                  <div key={pass.id} className="border border-gray-200 rounded-lg p-4">
+                    <div className="flex justify-between items-start">
+                      <div className="flex-1">
+                        <h3 className="font-semibold text-gray-900">{pass.passType?.replace('_', ' ')}</h3>
+                        <p className="text-sm text-gray-600 mt-1">{pass.purpose}</p>
+                        <div className="flex gap-4 mt-2">
+                          <span className="text-xs text-gray-500">
+                            From: {new Date(pass.fromTime).toLocaleString()}
+                          </span>
+                          <span className="text-xs text-gray-500">
+                            To: {new Date(pass.toTime).toLocaleString()}
+                          </span>
+                        </div>
+                      </div>
+                      <span className={`px-3 py-1 text-xs font-semibold rounded-full ${
+                        pass.status === 'APPROVED' ? 'bg-green-100 text-green-800' :
+                        pass.status === 'REJECTED' ? 'bg-red-100 text-red-800' :
+                        'bg-yellow-100 text-yellow-800'
+                      }`}>
+                        {pass.status}
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
             )}
           </div>
         </div>

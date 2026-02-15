@@ -3,6 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { API_ENDPOINTS } from '@/lib/api';
 
 export default function StudentDashboard() {
   const router = useRouter();
@@ -35,7 +36,7 @@ export default function StudentDashboard() {
   const fetchStudentData = async () => {
     try {
       // Get all students and find the one matching logged-in user's email
-      const studentsRes = await axios.get('http://localhost:8080/api/students');
+      const studentsRes = await axios.get(API_ENDPOINTS.STUDENTS);
       
       // Find student by matching email with logged-in user
       const userEmail = user?.email;
@@ -51,10 +52,10 @@ export default function StudentDashboard() {
       if (student) {
         // Fetch data specific to this student
         const [feesRes, leavesRes, complaintsRes, attendanceRes] = await Promise.all([
-          axios.get(`http://localhost:8080/api/fees/payments/student/${student.id}`).catch(() => ({ data: [] })),
-          axios.get('http://localhost:8080/api/leave-requests'),
-          axios.get('http://localhost:8080/api/complaints'),
-          axios.get('http://localhost:8080/api/attendance'),
+          axios.get(API_ENDPOINTS.FEES.PAYMENTS_BY_STUDENT(student.id)).catch(() => ({ data: [] })),
+          axios.get(API_ENDPOINTS.LEAVE_REQUESTS),
+          axios.get(API_ENDPOINTS.COMPLAINTS),
+          axios.get(API_ENDPOINTS.ATTENDANCE),
         ]);
 
         // Calculate stats for this specific student
@@ -195,16 +196,28 @@ export default function StudentDashboard() {
           <div className="bg-white rounded-lg shadow p-6">
             <h3 className="text-lg font-semibold text-gray-900 mb-4">Quick Actions</h3>
             <div className="space-y-3">
-              <button className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-left">
+              <button
+                onClick={() => router.push('/student/leave-request')}
+                className="w-full py-2 px-4 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors text-left"
+              >
                 Apply for Leave
               </button>
-              <button className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-left">
+              <button
+                onClick={() => router.push('/student/gate-pass')}
+                className="w-full py-2 px-4 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors text-left"
+              >
                 Request Gate Pass
               </button>
-              <button className="w-full py-2 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-left">
+              <button
+                onClick={() => router.push('/student/complaint')}
+                className="w-full py-2 px-4 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors text-left"
+              >
                 File Complaint
               </button>
-              <button className="w-full py-2 px-4 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-left">
+              <button
+                onClick={() => router.push('/student/pay-fees')}
+                className="w-full py-2 px-4 bg-yellow-600 text-white rounded-lg hover:bg-yellow-700 transition-colors text-left"
+              >
                 Pay Fees
               </button>
             </div>

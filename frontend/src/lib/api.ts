@@ -1,100 +1,56 @@
-import axiosInstance from './axios';
-import { Student, StudentStats, LeaveRequest } from '@/types/student';
+// API Configuration with environment variables
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080';
 
-export const studentApi = {
-  // Get all students
-  getAllStudents: async (): Promise<Student[]> => {
-    const response = await axiosInstance.get('/students');
-    return response.data;
+export const API_ENDPOINTS = {
+  // Base URL
+  BASE: API_BASE_URL,
+  
+  // Auth endpoints
+  AUTH: {
+    LOGIN: `${API_BASE_URL}/api/auth/login`,
+    SIGNUP: `${API_BASE_URL}/api/auth/signup`,
+    ME: `${API_BASE_URL}/api/auth/me`,
   },
-
-  // Get student by ID
-  getStudentById: async (id: number): Promise<Student> => {
-    const response = await axiosInstance.get(`/students/${id}`);
-    return response.data;
+  
+  // Student endpoints
+  STUDENTS: `${API_BASE_URL}/api/students`,
+  STUDENT_BY_ID: (id: number) => `${API_BASE_URL}/api/students/${id}`,
+  
+  // Room endpoints
+  ROOMS: `${API_BASE_URL}/api/rooms`,
+  ROOM_BY_ID: (id: number) => `${API_BASE_URL}/api/rooms/${id}`,
+  
+  // Fee endpoints
+  FEES: {
+    PAYMENTS: `${API_BASE_URL}/api/fees/payments`,
+    PAYMENT_BY_ID: (id: number) => `${API_BASE_URL}/api/fees/payments/${id}`,
+    PAYMENTS_BY_STUDENT: (studentId: number) => `${API_BASE_URL}/api/fees/payments/student/${studentId}`,
+    TYPES: `${API_BASE_URL}/api/fees/types`,
   },
-
-  // Create new student
-  createStudent: async (student: Student): Promise<Student> => {
-    const response = await axiosInstance.post('/students', student);
-    return response.data;
-  },
-
-  // Update student
-  updateStudent: async (id: number, student: Student): Promise<Student> => {
-    const response = await axiosInstance.put(`/students/${id}`, student);
-    return response.data;
-  },
-
-  // Delete student
-  deleteStudent: async (id: number): Promise<void> => {
-    await axiosInstance.delete(`/students/${id}`);
-  },
-
-  // Get students by room
-  getStudentsByRoom: async (roomNumber: string): Promise<Student[]> => {
-    const response = await axiosInstance.get(`/students/room/${roomNumber}`);
-    return response.data;
-  },
-
-  // Get students by fee status
-  getStudentsByFeeStatus: async (status: boolean): Promise<Student[]> => {
-    const response = await axiosInstance.get(`/students/fees/${status}`);
-    return response.data;
-  },
-
-  // Get statistics
-  getStats: async (): Promise<StudentStats> => {
-    const response = await axiosInstance.get('/students/stats');
-    return response.data;
-  },
+  
+  // Leave request endpoints
+  LEAVE_REQUESTS: `${API_BASE_URL}/api/leave-requests`,
+  LEAVE_REQUEST_BY_ID: (id: number) => `${API_BASE_URL}/api/leave-requests/${id}`,
+  
+  // Complaint endpoints
+  COMPLAINTS: `${API_BASE_URL}/api/complaints`,
+  COMPLAINT_BY_ID: (id: number) => `${API_BASE_URL}/api/complaints/${id}`,
+  
+  // Gate pass endpoints
+  GATE_PASSES: `${API_BASE_URL}/api/gate-passes`,
+  GATE_PASS_BY_ID: (id: number) => `${API_BASE_URL}/api/gate-passes/${id}`,
+  
+  // Attendance endpoints
+  ATTENDANCE: `${API_BASE_URL}/api/attendance`,
+  
+  // Mess menu endpoints
+  MESS_MENU: `${API_BASE_URL}/api/mess-menu`,
+  
+  // Notification endpoints
+  NOTIFICATIONS: `${API_BASE_URL}/api/notifications`,
+  
+  // Visitor endpoints
+  VISITORS: `${API_BASE_URL}/api/visitors`,
 };
 
-export const leaveRequestApi = {
-  // Get all leave requests
-  getAllLeaveRequests: async (): Promise<LeaveRequest[]> => {
-    const response = await axiosInstance.get('/leave-requests');
-    return response.data;
-  },
-
-  // Get leave request by ID
-  getLeaveRequestById: async (id: number): Promise<LeaveRequest> => {
-    const response = await axiosInstance.get(`/leave-requests/${id}`);
-    return response.data;
-  },
-
-  // Get leave requests by student
-  getLeaveRequestsByStudent: async (studentId: number): Promise<LeaveRequest[]> => {
-    const response = await axiosInstance.get(`/leave-requests/student/${studentId}`);
-    return response.data;
-  },
-
-  // Get leave requests by status
-  getLeaveRequestsByStatus: async (status: string): Promise<LeaveRequest[]> => {
-    const response = await axiosInstance.get(`/leave-requests/status/${status}`);
-    return response.data;
-  },
-
-  // Create leave request
-  createLeaveRequest: async (leaveRequest: LeaveRequest): Promise<LeaveRequest> => {
-    const response = await axiosInstance.post('/leave-requests', leaveRequest);
-    return response.data;
-  },
-
-  // Approve leave request
-  approveLeaveRequest: async (id: number, approvedBy: string, remarks: string): Promise<LeaveRequest> => {
-    const response = await axiosInstance.put(`/leave-requests/${id}/approve`, { approvedBy, remarks });
-    return response.data;
-  },
-
-  // Reject leave request
-  rejectLeaveRequest: async (id: number, rejectedBy: string, remarks: string): Promise<LeaveRequest> => {
-    const response = await axiosInstance.put(`/leave-requests/${id}/reject`, { rejectedBy, remarks });
-    return response.data;
-  },
-
-  // Delete leave request
-  deleteLeaveRequest: async (id: number): Promise<void> => {
-    await axiosInstance.delete(`/leave-requests/${id}`);
-  },
-};
+export default API_BASE_URL;
